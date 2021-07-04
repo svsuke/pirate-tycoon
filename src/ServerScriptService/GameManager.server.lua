@@ -2,8 +2,9 @@
 local ServerStorage  = game:GetService("ServerStorage")
 local PlayersService = game:GetService("Players")
 -- Modules
-local PlotManager   = require(ServerStorage.PlotManager)
-local IncomeManager = require(ServerStorage.IncomeManager)
+local Managers      = ServerStorage.Managers
+local PlotManager   = require(Managers.PlotManager)
+local IncomeManager = require(Managers.IncomeManager)
 
 -- Event listeners
 PlayersService.PlayerAdded:Connect(PlotManager.PlayerAdded)
