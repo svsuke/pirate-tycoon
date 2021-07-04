@@ -1,5 +1,4 @@
--- The main script that runs when the player spawns
-
+--[[
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -13,3 +12,4 @@ local Gui = Dialog({
 Gui.Parent = player.PlayerGui
 
 print("Gui Loaded")
+--]]
