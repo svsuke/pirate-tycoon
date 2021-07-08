@@ -1,26 +1,27 @@
 -- Services
 local ServerStorage  = game:GetService("ServerStorage")
 local PlayersService = game:GetService("Players")
--- Modules
-local Managers      = ServerStorage.Managers
+-- Aliases
+local Managers    = ServerStorage.Managers
+local Collections = ServerStorage.Collections
+-- Managers
 local PlotManager   = require(Managers.PlotManager)
 local IncomeManager = require(Managers.IncomeManager)
+-- Collections
+local PlotCollection = require(Collections.PlotCollection)
+local SpawnPointCollection = require(Collections.SpawnPointCollection)
+
+-- Load Collections
+PlotCollection.Load()
+SpawnPointCollection.Load()
+-- Load Managers
+PlotManager.Load(PlotCollection)
 
 -- Event listeners
-PlayersService.PlayerAdded:Connect(PlotManager.PlayerAdded)
+PlayersService.PlayerAdded:Connect(function(player)
+  local assigned = PlotManager.AssignPlot(player)
 
-local prevTime = os.time()
-
-while wait() do
-  local currTime = os.time()
-
-  if (currTime - prevTime) >= 2 then
-    local playersWithPlots = PlotManager.getPlayersWithPlots()
-    
-    for _, player in pairs(playersWithPlots) do
-      IncomeManager.calculateIncome(player)
-    end
-
-    prevTime = currTime
+  if assigned then
+    print('Assigned a plot to', player.Name)
   end
-end
+end)
