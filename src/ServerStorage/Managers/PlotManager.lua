@@ -1,43 +1,38 @@
-local module = {
-  playersWithPlots = {}
-}
+-- Services
+local CollectionService = game:GetService('CollectionService')
+-- Tables
+local Manager = {}
 
-function attachLeaderstats(player)
-  local Leaderstats = Instance.new('Folder')
-  Leaderstats.Name = "leaderstats"
-  Leaderstats.Parent = player
+function Manager:FindUnoccupiedPlot()
+  local Owner = nil
 
-  local Dubloons = Instance.new('IntValue')
-  Dubloons.Name  = 'Dubloons'
-  Dubloons.Value = 0
-  Dubloons.Parent = Leaderstats
-end
+  for _, plot in pairs(Manager.Collection.Items) do
+    print(plot)
+    Owner = plot:WaitForChild('Owner')
 
--- To-do: check datastore if player has plot
-function updatePlots(player, character)
-  -- temporary
-  local hasPlotFlag = Instance.new('BoolValue')
-  hasPlotFlag.Name = 'HasPlot'
-  hasPlotFlag.Value = true
-  hasPlotFlag.Parent = player.Character
-
-  table.insert(module.playersWithPlots, player)
-end
-
-module.PlayerAdded = function(player)
-  attachLeaderstats(player)
-
-  if player.Character then
-    updatePlots(player, player.Character)
+    if Owner.Value == nil then
+      return plot
+    end
   end
 
-  player.CharacterAdded:Connect(function(character)
-    updatePlots(player, character)
-  end)
+  return nil
 end
 
-module.getPlayersWithPlots = function()
-  return module.playersWithPlots
+function Manager:AssignPlot(player)
+  local plot = Manager:FindUnoccupiedPlot()
+
+  if plot then
+    plot:WaitForChild('Owner').Value = player
+    plot:WaitForChild('IsOccupied').Value = true
+
+    return true
+  end
+
+  return false
 end
 
-return module
+function Manager.Load(collection)
+  Manager.Collection = collection
+end
+
+return Manager

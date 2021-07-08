@@ -1,6 +1,6 @@
-local module = {}
+local Manager = {}
 
-module.calculateIncome = function(player)
+Manager.calculateIncome = function(player)
   -- To-do: add this to chest capacity
   -- then when chest is collected, update leaderstats
   -- (IncomeCollectorManager)
@@ -12,4 +12,4 @@ module.calculateIncome = function(player)
   end
 end
 
-return module
+return Manager
