@@ -3,7 +3,9 @@ local CollectionChest = {}
 function CollectionChest.new()
   local Gui = Instance.new('BillboardGui')
   Gui.Size = UDim2.new(10,0,5,0)
-  Gui.MaxDistance = 10
+  Gui.MaxDistance = 25
+  Gui.ExtentsOffsetWorldSpace = Vector3.new(0,2,0)
+  Gui.AlwaysOnTop = true
 
   local Frame = Instance.new('Frame')
   Frame.AutomaticSize = Enum.AutomaticSize.XY

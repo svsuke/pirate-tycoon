@@ -6,8 +6,7 @@ local Manager = {}
 function Manager:FindUnoccupiedPlot()
   local Owner = nil
 
-  for _, plot in pairs(Manager.Collection.Items) do
-    print(plot)
+  for _, plot in pairs(self.Collection.Items) do
     Owner = plot:WaitForChild('Owner')
 
     if Owner.Value == nil then
@@ -19,11 +18,12 @@ function Manager:FindUnoccupiedPlot()
 end
 
 function Manager:AssignPlot(player)
-  local plot = Manager:FindUnoccupiedPlot()
+  local plot = self:FindUnoccupiedPlot()
 
   if plot then
     plot:WaitForChild('Owner').Value = player
     plot:WaitForChild('IsOccupied').Value = true
+    player.RespawnLocation = plot:WaitForChild('Spawn')
 
     return true
   end

@@ -19,7 +19,7 @@ PlotManager.Load(PlotCollection)
 
 -- Event listeners
 PlayersService.PlayerAdded:Connect(function(player)
-  local assigned = PlotManager.AssignPlot(player)
+  local assigned = PlotManager:AssignPlot(player)
 
   if assigned then
     print('Assigned a plot to', player.Name)
