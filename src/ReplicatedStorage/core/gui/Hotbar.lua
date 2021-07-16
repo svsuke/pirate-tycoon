@@ -1,5 +1,8 @@
-local TweenService = game:GetService("TweenService")
+local TweenService = game:GetService('TweenService')
 local UserInputService = game:GetService('UserInputService')
+local Players = game:GetService('Players')
+
+local Player = Players.LocalPlayer
 
 local Component = {
   States = {},
@@ -27,16 +30,17 @@ function Component:GenerateSlots(container, count)
   for i=1, count do
     local Slot = Instance.new('Frame')
     Slot.Name = 'Slot'..i
-    Slot.BackgroundColor3 = Color3.new(1,1,1)
-    Slot.BackgroundTransparency = 0.8
+    Slot.BackgroundColor3 = Color3.fromRGB(70,70,70)
+    Slot.BorderColor3 = Color3.new(0,0,0)
+    -- Slot.BorderMode = Enum.BorderMode.Inset
+    Slot.BorderSizePixel = 1
     Slot.Size = UDim2.new(0,48,0,48)
-    -- Keep track of slot
     Slot.Parent = container
     table.insert(self.Slots, Slot)
     
     local SlotCorner = Instance.new('UICorner')
     SlotCorner.CornerRadius = UDim.new(0,6)
-    SlotCorner.Parent = Slot
+    -- SlotCorner.Parent = Slot
 
     local SlotKeyBindLabel = Instance.new('TextLabel')
     SlotKeyBindLabel.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -54,18 +58,15 @@ function Component:GenerateSlots(container, count)
     self.States[Slot] = {}
     
     self.States[Slot].Initial = TweenService:Create(Slot, Timing, {
-      BackgroundColor3 = Color3.new(1,1,1),
-      BackgroundTransparency = 0.8
+      BorderColor3 = Color3.new(0,0,0)
     })
 
     self.States[Slot].Hover = TweenService:Create(Slot, Timing, {
-      BackgroundColor3 = Color3.new(1,1,0),
-      BackgroundTransparency = 0.3
+      BorderColor3 = Color3.new(1,1,0)
     })
 
     self.States[Slot].Selected = TweenService:Create(Slot, Timing, {
-      BackgroundColor3 = Color3.fromRGB(255, 150, 0),
-      BackgroundTransparency = 0.5
+      BorderColor3 = Color3.fromRGB(255, 150, 0)
     })
 
     -- Update connections
@@ -81,7 +82,13 @@ function Component:GenerateSlots(container, count)
   end
 end
 
-function Component:new(slotCount)
+function Component:new(backpack, slotCount)
+-- Hotbar is useless otherwise
+  if not backpack then
+    print('Backpack not found')
+    return nil
+  end
+
   local Gui = Instance.new('ScreenGui')
   Gui.Name = 'Hotbar'
   
@@ -92,7 +99,7 @@ function Component:new(slotCount)
   Frame.Position = UDim2.new(0.5, 0, 1, -24)
   Frame.Parent = Gui
 
-  local PaddingVal = 8
+  local PaddingVal = 10
 
   local FramePadding = Instance.new('UIPadding')
   FramePadding.PaddingTop = UDim.new(0,PaddingVal)
@@ -114,17 +121,26 @@ function Component:new(slotCount)
   self:GenerateSlots(Frame, slotCount)
 
   UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-      print('Mouse1 Click')
-    elseif input.UserInputType == Enum.UserInputType.Keyboard then
-      local key = input.KeyCode
-      local code = key.Value
-      local first = Enum.KeyCode.One.Value
-      local last = first + slotCount-1
-      
-      if code >= first and code <= last then
-        self:HighlightSlot(code-48)
+    if not gameProcessed then
+      if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local item = game.Players.LocalPlayer.Backpack:GetChildren()[1]
+        print(item)
+        if item then
+          print(item.TextureId)
+        end
+
+      elseif input.UserInputType == Enum.UserInputType.Keyboard then
+        local key = input.KeyCode
+        local code = key.Value
+        local first = Enum.KeyCode.One.Value
+        local last = first + slotCount-1
+        
+        if code >= first and code <= last then
+          self:HighlightSlot(code-48)
+        end
       end
+    else
+      print('ignore')
     end
   end)
 

@@ -9,7 +9,7 @@ function Manager:FindUnoccupiedPlot()
   for _, plot in pairs(self.Collection.Items) do
     Owner = plot:WaitForChild('Owner')
 
-    if Owner.Value == nil then
+    if not Owner.Value then
       return plot
     end
   end

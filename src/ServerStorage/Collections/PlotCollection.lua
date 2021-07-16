@@ -24,7 +24,7 @@ end
 function LoadChest(instance)
   local Chest = instance:WaitForChild('Chest')
 
-  if Chest == nil then
+  if not Chest then
     return print('CHEST NOT LOADED!', instance.Name)
   end
 
